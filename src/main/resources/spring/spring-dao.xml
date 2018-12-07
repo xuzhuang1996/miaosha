@@ -27,6 +27,7 @@
         </bean>
         
         <!--第三步整合。配置SqlSessionFactory对象-->
+        <!--第三步整合。有了SqlSessionFactory对象，就可以工厂产生sqlsession对象（数据库连接有、实体类有、映射文件有），该对象可以使用crud操作-->
         <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 	        <!--注入数据库连接池-->
 	        <property name="dataSource" ref="dataSource"/>
@@ -39,7 +40,8 @@
 	        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
         </bean>
         
-        <!--第四步:配置扫描Dao接口包,动态实现DAO接口,注入到spring容器（不给id是因为不用ref这种引用）-->
+        <!--第四步:配置扫描Dao接口包,然后创建各自接口的动态代理类DAO接口,注入到spring容器（不给id是因为不用ref这种引用）-->
+        <!-- 既然生成了动态代理类，那么就可以直接用该接口的对象去调用该接口的方法。 所以我们能直接用userDAO.insert等-->
 	    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 	        <!--注入SqlSessionFactory ，为了防止加载不完全，到用的时候才去找value里面的值 -->
 	        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>

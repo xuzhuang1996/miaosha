@@ -1,0 +1,8 @@
+eclipse.preferences.version=1
+encoding//src/main/java=UTF-8
+encoding//src/main/java/dao/SeckillDao.java=gbk
+encoding//src/main/java/dao/SuccessKilledDao.java=gbk
+encoding//src/main/java/entity/SuccessKilled.java=gbk
+encoding//src/main/java/test/SeckillDaoTest.java=gbk
+encoding//src/main/java/test/SuccessKilledDaoTest.java=gbk
+encoding//src/main/resources=UTF-8
