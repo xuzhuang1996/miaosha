@@ -12,9 +12,9 @@ ssm入门很好的一个例子：https://www.imooc.com/u/2145618/courses?sort=pu
 
 ## 流程 ##  
 
-第一步，在浏览器输入http://localhost:8888/miaosha/seckill/list 。根据spring-web.xml中的配置，扫描web包下的相关的bean，发现有一个@RequestMapping("/seckill")，表示该url由SeckillController来处理，并且进入SeckillController下的list方法，model将数据绑定，最终返回"list"，根据spring-web.xml中的配置，就是/WEB-INF/jsp/list.jsp。view将根据model中的数据，自动进行动态显示该jsp文件。   
-第二步，点击Link详情页。比如，点击link的时候url显示为http://localhost:8888/miaosha/seckill/1005/detail ，发现该控制器中有一个@RequestMapping(value = "/{seckillId}/detail", method = RequestMethod.GET)的映射方法detail，因此detail方法的seckillId参数将拿到1005这个参数。现在进入detail方法。简单判断：该seckillId是否拿到值，万一中间出错，seckillId没有值，后面就肯定出错。所以判断是否存在seckillId（幸好为Long类型，可以根据null来判断）。接着拿到秒杀对象seckill，{既然是取的数据，用之前都要进行一个判断}，由model绑定后，根据返回的“detail”，进入/WEB-INF/jsp/detail.jsp页面。  
-第三步，进入detail.jsp页面。刚进入detail.jsp的时候，根据model中的数据，执行seckill.detail.init(seckillId，startTime，endTime)方法进行页面初始化：
+&ensp;&ensp;&ensp;&ensp;第一步，在浏览器输入http://localhost:8888/miaosha/seckill/list 。根据spring-web.xml中的配置，扫描web包下的相关的bean，发现有一个@RequestMapping("/seckill")，表示该url由SeckillController来处理，并且进入SeckillController下的list方法，model将数据绑定，最终返回"list"，根据spring-web.xml中的配置，就是/WEB-INF/jsp/list.jsp。view将根据model中的数据，自动进行动态显示该jsp文件。   
+&ensp;&ensp;&ensp;&ensp;第二步，点击Link详情页。比如，点击link的时候url显示为http://localhost:8888/miaosha/seckill/1005/detail ，发现该控制器中有一个@RequestMapping(value = "/{seckillId}/detail", method = RequestMethod.GET)的映射方法detail，因此detail方法的seckillId参数将拿到1005这个参数。现在进入detail方法。简单判断：该seckillId是否拿到值，万一中间出错，seckillId没有值，后面就肯定出错。所以判断是否存在seckillId（幸好为Long类型，可以根据null来判断）。接着拿到秒杀对象seckill，{既然是取的数据，用之前都要进行一个判断}，由model绑定后，根据返回的“detail”，进入/WEB-INF/jsp/detail.jsp页面。  
+&ensp;&ensp;&ensp;&ensp;第三步，进入detail.jsp页面。刚进入detail.jsp的时候，根据model中的数据，执行seckill.detail.init(seckillId，startTime，endTime)方法进行页面初始化：
 - 如果cookie中没有手机号，或者输入的手机号无效。模态窗口将出来。
 - 已有手机号也就是登陆成功后。根据后台传入的秒杀对象信息，进行ajax请求获取服务器数据，拿到服务器时间。**在利用Ajax进行web层与service层的数据传输时，建议统一传递数据的类型SeckillResult。在里面设定参数success（是否传输成功），以及泛型data（所传输的数据），以及错误信息error。**
    - nowTime > endTime秒杀结束
