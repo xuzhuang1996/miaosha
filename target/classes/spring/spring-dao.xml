@@ -10,7 +10,7 @@
         <!-- 配置整合mybatis过程 -->
         <!-- 第一步，配置数据库相关参数 -->
         <util:properties id="jdbc" location="classpath:jdbc.properties"/>
-        <!-- 第二步，配置数据库连接池 -->
+        <!-- 第二步，配置数据库连接池 com.mchange.v2.c3p0.ComboPooledDataSource-->
         <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
 	        <property name="driverClass" value="#{jdbc['mysql.driver']}"/>
 	        <property name="jdbcUrl" value="#{jdbc['jdbc.url']}"/>

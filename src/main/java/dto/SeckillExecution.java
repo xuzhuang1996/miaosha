@@ -1,10 +1,44 @@
 package dto;
 
+import java.io.Serializable;
+
 import entity.SuccessKilled;
 import enums.SeckillStatEnum;
 
 //封装秒杀执行后的结果
-public class SeckillExecution {
+public class SeckillExecution implements Serializable{
+	public long getSeckillId() {
+		return seckillId;
+	}
+
+	public void setSeckillId(long seckillId) {
+		this.seckillId = seckillId;
+	}
+
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+
+	public String getStateInfo() {
+		return stateInfo;
+	}
+
+	public void setStateInfo(String stateInfo) {
+		this.stateInfo = stateInfo;
+	}
+
+	public SuccessKilled getSuccessKilled() {
+		return successKilled;
+	}
+
+	public void setSuccessKilled(SuccessKilled successKilled) {
+		this.successKilled = successKilled;
+	}
+
 	private long seckillId;
 
     /**
