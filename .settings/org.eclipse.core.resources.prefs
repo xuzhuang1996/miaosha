@@ -1,2 +1,11 @@
 eclipse.preferences.version=1
 encoding//src/main/webapp/WEB-INF/jsp/common=utf-8
+encoding//src/main/java/dao/SeckillDao.java=gbk
+encoding//src/main/java/dao/SuccessKilledDao.java=gbk
+encoding//src/main/java/entity/SuccessKilled.java=gbk
+encoding//src/main/java/enums/SeckillStatEnum.java=gbk
+encoding//src/main/java/service/impl/SeckillServiceImpl.java=gbk
+encoding//src/main/java/test/SeckillDaoTest.java=gbk
+encoding//src/main/java/test/SuccessKilledDaoTest.java=gbk
+encoding//src/main/resources=UTF-8
+encoding/<project>=GBK
