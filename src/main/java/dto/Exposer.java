@@ -1,13 +1,12 @@
 package dto;
 
-import java.io.Serializable;
 
 //数据传输层DTO
 
 //暴露秒杀地址DTO(dto:web层和service层传递数据用
 //这些跟实际业务关系不大，供exportSeckillUrl方法使用
 //前端可以跟据开始时间与结束时间就可以判断前端要显示的逻辑
-public class Exposer  implements Serializable{
+public class Exposer{
 	@Override
 	public String toString() {
 		return "Exposer [exposed=" + exposed + ", md5=" + md5 + ", seckillId=" + seckillId + ", now=" + now + ", start="

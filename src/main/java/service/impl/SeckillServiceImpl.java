@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 
 import dao.SeckillDao;
 import dao.SuccessKilledDao;
+import dao.cache.RedisDao;
 import dto.Exposer;
 import dto.SeckillExecution;
 import entity.Seckill;
@@ -35,6 +36,8 @@ public class SeckillServiceImpl implements SeckillService{
 	private SeckillDao seckillDao;
     @Autowired
 	private SuccessKilledDao successKilledDao;
+    @Autowired
+	private RedisDao redisDao;
 	
 	public List<Seckill> getSeckillList() {
 		// TODO Auto-generated method stub
@@ -51,10 +54,24 @@ public class SeckillServiceImpl implements SeckillService{
 	 *  其他情况，可以开启秒杀，但在开启秒杀之前，需要给用户注册一个MD5串，同时提供秒杀信息，（MD5用于接下来秒杀时身份验证） 
 	 */
 	public Exposer exportSeckillUrl(Long seckillId) {
-		Seckill seckill = seckillDao.queryById(seckillId);
-		//秒杀产品都没有了
-		if(seckill == null)
-			return new Exposer(false, seckillId);
+		//缓存优化
+		//1.访问redis
+		//Seckill seckill = seckillDao.queryById(seckillId);//对这行进行优化
+		Seckill seckill = redisDao.getSeckill(seckillId);
+		if (seckill == null) {
+            //2.访问数据库
+            seckill = getById(seckillId);
+            if (seckill == null) {
+                return new Exposer(false, seckillId);
+            } else {
+                //3.放入redis
+                redisDao.setSeckill(seckill);
+            }
+        }
+		
+//		//秒杀产品都没有了.这里就多余了
+//		if(seckill == null)
+//			return new Exposer(false, seckillId);
 		//秒杀产品还在的情况下
 		Date startTime = seckill.getStartTime();
         Date endTime = seckill.getEndTime();
@@ -86,7 +103,13 @@ public class SeckillServiceImpl implements SeckillService{
 		if (StringUtils.isEmpty(md5) || !md5.equals(getMD5(seckillId))) {
             throw new SeckillException(SeckillStatEnum.DATA_REWRITE.getStateInfo());
         }
-		//执行秒杀逻辑:1.减库存.2.记录购买行为
+		//本来执行秒杀逻辑:1.减库存.2.记录购买行为
+		// mysql的行级锁是针对索引，InnerDB支持行锁也支持表锁。只有通过索引条件检索数据，InnoDB才使用行级锁，否则，InnoDB将使用表锁！
+		// 行级锁的缺点是：由于需要请求大量的锁资源，所以速度慢，内存消耗大，并且可能导致大量的锁冲突，从而影响并发性能。
+		// insertSuccessKilled这个操作没有行级索。而reduceNumber的操作，为updata操作具有行级索。
+		// 为了优化：如果更新操作在前，那么就需要执行完更新和插入以后事务提交或回滚才释放锁，如果插入在前，则更新完以后事务提交或回滚就释放锁。
+		// 结论：更新在前，加锁和释放锁之间两次的网络延迟和GC，如果插入在前，则加锁和释放锁之间只有一次的网络延迟和GC，也就是减少的持有锁的时间。
+		// 结论：update同一行会导致行级锁，而insert是可以并行执行的，线程可以并发insert。因此时间减少了。
 		Date nowTime = new Date();
 		try {
 
